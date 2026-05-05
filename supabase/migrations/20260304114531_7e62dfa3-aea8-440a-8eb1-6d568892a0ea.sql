@@ -1,1 +1,0 @@
-ALTER TABLE public.listings ALTER COLUMN organization_id DROP NOT NULL;

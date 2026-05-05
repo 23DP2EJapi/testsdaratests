@@ -1,1 +1,0 @@
-ALTER TABLE public.profiles ADD COLUMN last_name_change timestamp with time zone DEFAULT NULL;
