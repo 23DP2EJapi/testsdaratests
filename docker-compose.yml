@@ -1,0 +1,22 @@
+services:
+  backend:
+    build:
+      context: ./brivpratigielv-api
+      dockerfile: Dockerfile
+    container_name: brivpratigielv-backend
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: http://localhost:8000/api
+    container_name: brivpratigielv-frontend
+    depends_on:
+      - backend
+    ports:
+      - "8080:80"
+    restart: unless-stopped

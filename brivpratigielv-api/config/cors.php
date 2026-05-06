@@ -2,9 +2,14 @@
 
 return [
     'paths' => ['api/*'],
-    'origins' => ['http://localhost:8080', 'http://localhost:5173'],
-    'methods' => ['*'],
-    'headers' => ['*'],
+    'allowed_methods' => ['*'],
+    'allowed_origins' => [
+        'https://testsdaratests.vercel.app',
+        'http://localhost:8080',
+        'http://localhost:5173',
+    ],
+    'allowed_origins_patterns' => [],
+    'allowed_headers' => ['*'],
     'exposed_headers' => [],
     'max_age' => 0,
     'supports_credentials' => false,
