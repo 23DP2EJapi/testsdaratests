@@ -8,10 +8,32 @@ use Symfony\Component\HttpFoundation\Response;
 
 class CorsMiddleware
 {
+    private function originMatchesRailwayHost(string $origin): bool
+    {
+        $host = parse_url($origin, PHP_URL_HOST);
+
+        return is_string($host) && ($host === 'up.railway.app' || str_ends_with($host, '.up.railway.app'));
+    }
+
+    private function normalizeRegexPattern(string $pattern): string
+    {
+        $pattern = trim($pattern);
+        if ($pattern === '') {
+            return '';
+        }
+
+        $firstChar = $pattern[0];
+        $lastChar = substr($pattern, -1);
+        $hasDelimiters = !ctype_alnum($firstChar) && $firstChar === $lastChar;
+
+        return $hasDelimiters ? $pattern : '#'.$pattern.'#';
+    }
+
     private function originMatchesPatterns(string $origin, array $patterns): bool
     {
         foreach ($patterns as $pattern) {
-            if ($pattern !== '' && @preg_match($pattern, $origin) === 1) {
+            $normalizedPattern = $this->normalizeRegexPattern($pattern);
+            if ($normalizedPattern !== '' && @preg_match($normalizedPattern, $origin) === 1) {
                 return true;
             }
         }
@@ -26,21 +48,31 @@ class CorsMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
+        $defaultOrigins = 'https://brivpratigie.up.railway.app,https://frontend-tests-production.up.railway.app,https://testsdaratests.vercel.app,http://localhost:8080,http://localhost:5173';
+        $defaultOriginPatterns = '#^https://.*\.up\.railway\.app$#';
+
+        $originsEnv = trim((string) env('CORS_ALLOWED_ORIGINS', $defaultOrigins));
+        $patternsEnv = trim((string) env('CORS_ALLOWED_ORIGIN_PATTERNS', ''));
+        if ($patternsEnv === '') {
+            $patternsEnv = $defaultOriginPatterns;
+        }
+
         $allowedOrigins = array_values(array_filter(array_map(
             'trim',
-            explode(',', (string) env('CORS_ALLOWED_ORIGINS', 'https://frontend-tests-production.up.railway.app,https://testsdaratests.vercel.app,http://localhost:8080,http://localhost:5173'))
+            explode(',', $originsEnv)
         )));
         $allowedOriginPatterns = array_values(array_filter(array_map(
             'trim',
-            explode(',', (string) env('CORS_ALLOWED_ORIGIN_PATTERNS', '#^https://.*\.up\.railway\.app$#'))
+            explode(',', $patternsEnv)
         )));
 
         $origin = $request->header('Origin');
         $isAllowedByOrigin = $origin && in_array($origin, $allowedOrigins, true);
         $isAllowedByPattern = $origin && $this->originMatchesPatterns($origin, $allowedOriginPatterns);
+        $isAllowedRailwayHost = $origin && $this->originMatchesRailwayHost($origin);
 
         // Check if the request origin is in our allowed origins
-        if ($isAllowedByOrigin || $isAllowedByPattern) {
+        if ($isAllowedByOrigin || $isAllowedByPattern || $isAllowedRailwayHost) {
             $allowOrigin = $origin;
         } else {
             $allowOrigin = null;

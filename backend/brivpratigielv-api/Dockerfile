@@ -14,6 +14,7 @@ RUN apk add --no-cache \
   && docker-php-ext-install \
     bcmath \
     intl \
+    pdo_mysql \
     pdo_sqlite \
     zip
 

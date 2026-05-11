@@ -18,41 +18,6 @@ Route::get('/health', function () {
     return response()->json(['status' => 'ok']);
 });
 
-// CORS Preflight for all routes
-Route::options('{any}', function () {
-    $allowedOrigins = array_values(array_filter(array_map(
-        'trim',
-        explode(',', (string) env('CORS_ALLOWED_ORIGINS', 'https://frontend-tests-production.up.railway.app,https://testsdaratests.vercel.app,http://localhost:8080,http://localhost:5173'))
-    )));
-    $allowedOriginPatterns = array_values(array_filter(array_map(
-        'trim',
-        explode(',', (string) env('CORS_ALLOWED_ORIGIN_PATTERNS', '#^https://.*\.up\.railway\.app$#'))
-    )));
-    $origin = request()->header('Origin');
-
-    $response = response('', 200)
-        ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS')
-        ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization')
-        ->header('Vary', 'Origin');
-
-    $matchesPattern = false;
-    if ($origin) {
-        foreach ($allowedOriginPatterns as $pattern) {
-            if ($pattern !== '' && @preg_match($pattern, $origin) === 1) {
-                $matchesPattern = true;
-                break;
-            }
-        }
-    }
-
-    if ($origin && (in_array($origin, $allowedOrigins, true) || $matchesPattern)) {
-        $response->header('Access-Control-Allow-Origin', $origin)
-            ->header('Access-Control-Allow-Credentials', 'true');
-    }
-
-    return $response;
-})->where('any', '.*');
-
 Route::post('/auth/register', [AuthController::class, 'register']);
 Route::post('/auth/login', [AuthController::class, 'login']);
 

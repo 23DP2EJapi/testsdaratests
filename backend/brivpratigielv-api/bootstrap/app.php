@@ -3,7 +3,6 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use App\Http\CorsMiddleware;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -21,10 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // Trust proxies
         $middleware->trustProxies(at: ['127.0.0.1', '10.0.0.0/8']);
 
-        // Register CORS middleware for API routes
-        $middleware->api(prepend: [
-            CorsMiddleware::class,
-        ]);
+        $middleware->append(\Illuminate\Http\Middleware\HandleCors::class);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
