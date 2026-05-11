@@ -47,13 +47,16 @@ class CorsMiddleware
 
         // Handle preflight OPTIONS requests — respond immediately with CORS headers.
         if ($request->isMethod('OPTIONS')) {
+            $allowHeaders = $request->header('Access-Control-Request-Headers')
+                ?? 'Content-Type, Authorization, X-Requested-With';
+
             $response = response('', 200);
 
             if ($allowOrigin !== null) {
                 $response
                     ->header('Access-Control-Allow-Origin', $allowOrigin)
                     ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS')
-                    ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+                    ->header('Access-Control-Allow-Headers', $allowHeaders)
                     ->header('Access-Control-Allow-Credentials', 'true');
             }
 
@@ -67,7 +70,7 @@ class CorsMiddleware
             $response
                 ->header('Access-Control-Allow-Origin', $allowOrigin)
                 ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS')
-                ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+                ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With')
                 ->header('Access-Control-Allow-Credentials', 'true');
         }
 
