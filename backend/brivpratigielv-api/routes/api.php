@@ -24,6 +24,10 @@ Route::options('{any}', function () {
         'trim',
         explode(',', (string) env('CORS_ALLOWED_ORIGINS', 'https://frontend-tests-production.up.railway.app,https://testsdaratests.vercel.app,http://localhost:8080,http://localhost:5173'))
     )));
+    $allowedOriginPatterns = array_values(array_filter(array_map(
+        'trim',
+        explode(',', (string) env('CORS_ALLOWED_ORIGIN_PATTERNS', '#^https://.*\.up\.railway\.app$#'))
+    )));
     $origin = request()->header('Origin');
 
     $response = response('', 200)
@@ -31,7 +35,17 @@ Route::options('{any}', function () {
         ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization')
         ->header('Vary', 'Origin');
 
-    if ($origin && in_array($origin, $allowedOrigins, true)) {
+    $matchesPattern = false;
+    if ($origin) {
+        foreach ($allowedOriginPatterns as $pattern) {
+            if ($pattern !== '' && @preg_match($pattern, $origin) === 1) {
+                $matchesPattern = true;
+                break;
+            }
+        }
+    }
+
+    if ($origin && (in_array($origin, $allowedOrigins, true) || $matchesPattern)) {
         $response->header('Access-Control-Allow-Origin', $origin)
             ->header('Access-Control-Allow-Credentials', 'true');
     }

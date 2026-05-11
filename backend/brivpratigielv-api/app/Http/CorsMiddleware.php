@@ -8,6 +8,17 @@ use Symfony\Component\HttpFoundation\Response;
 
 class CorsMiddleware
 {
+    private function originMatchesPatterns(string $origin, array $patterns): bool
+    {
+        foreach ($patterns as $pattern) {
+            if ($pattern !== '' && @preg_match($pattern, $origin) === 1) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     /**
      * Handle an incoming request.
      *
@@ -19,11 +30,17 @@ class CorsMiddleware
             'trim',
             explode(',', (string) env('CORS_ALLOWED_ORIGINS', 'https://frontend-tests-production.up.railway.app,https://testsdaratests.vercel.app,http://localhost:8080,http://localhost:5173'))
         )));
+        $allowedOriginPatterns = array_values(array_filter(array_map(
+            'trim',
+            explode(',', (string) env('CORS_ALLOWED_ORIGIN_PATTERNS', '#^https://.*\.up\.railway\.app$#'))
+        )));
 
         $origin = $request->header('Origin');
+        $isAllowedByOrigin = $origin && in_array($origin, $allowedOrigins, true);
+        $isAllowedByPattern = $origin && $this->originMatchesPatterns($origin, $allowedOriginPatterns);
 
         // Check if the request origin is in our allowed origins
-        if (in_array($origin, $allowedOrigins)) {
+        if ($isAllowedByOrigin || $isAllowedByPattern) {
             $allowOrigin = $origin;
         } else {
             $allowOrigin = null;

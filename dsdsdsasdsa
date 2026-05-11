@@ -1,0 +1,68 @@
+[33mcommit 05a6c3a2241257e320131d11fdb1a74ddc9aa6e8[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m
+Author: Elvis Janis Japins <a230739ej@rvt.lv>
+Date:   Mon May 11 17:13:49 2026 +0300
+
+    as
+
+[33mcommit ab210db70cb9cbe43b3739abafcd8811b5726309[m
+Author: Elvis Janis Japins <a230739ej@rvt.lv>
+Date:   Mon May 11 17:07:01 2026 +0300
+
+    as
+
+[33mcommit f7dd7029d8277cff41d787d1ab39c120fe13c1e9[m
+Author: Elvis Janis Japins <a230739ej@rvt.lv>
+Date:   Mon May 11 17:01:45 2026 +0300
+
+    sa
+
+[33mcommit 9f844e94bd1f6e5b4dcc48789153c3e4b13d3673[m
+Merge: 5d86960 c32de6d
+Author: Elvis Janis Japins <a230739ej@rvt.lv>
+Date:   Sun May 10 20:00:36 2026 +0300
+
+    Merge branch 'main' of https://github.com/23DP2EJapi/testsdaratests
+
+[33mcommit 5d8696050dbc7b7d5fb1a1a742b1664f7f8c663f[m
+Author: Elvis Janis Japins <a230739ej@rvt.lv>
+Date:   Sun May 10 20:00:32 2026 +0300
+
+    host update
+
+[33mcommit c32de6dd81487d60cbb5969562f07a02e9a5ab2c[m
+Author: Elvis Jānis Japins <166109765+23DP2EJapi@users.noreply.github.com>
+Date:   Thu May 7 11:05:35 2026 +0000
+
+    a
+
+[33mcommit 6fed7c3eb2855c8592e5b1f337c9cc20515acd48[m
+Author: Elvis Janis Japins <a230739ej@rvt.lv>
+Date:   Wed May 6 21:31:07 2026 +0300
+
+    host test
+
+[33mcommit 51f4f3ae8682f985ff85046efe05a372315fc5e3[m
+Author: Elvis Janis Japins <a230739ej@rvt.lv>
+Date:   Wed May 6 21:12:55 2026 +0300
+
+    host
+
+[33mcommit 72464395cc2f125e73d7d8e178131584900368d0[m
+Author: Elvis Janis Japins <a230739ej@rvt.lv>
+Date:   Tue May 5 23:15:34 2026 +0300
+
+    Remove Bun lockfiles and switch to npm dependencies
+
+[33mcommit 35913703900bdbb5ec0aef72a6ec86d5dc8701b2[m
+Author: Elvis Janis Japins <a230739ej@rvt.lv>
+Date:   Tue May 5 22:57:28 2026 +0300
+
+    tests
+    
+    Co-authored-by: Copilot <copilot@github.com>
+
+[33mcommit 5463d5aa2d27d4f1e93f476536e31e2bee8182e9[m
+Author: Elvis Janis Japins <a230739ej@rvt.lv>
+Date:   Fri May 1 08:29:01 2026 +0300
+
+    TSTS
