@@ -21,7 +21,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->trustProxies(at: ['127.0.0.1', '10.0.0.0/8']);
 
         // CORS must run early so preflight/short-circuited responses still get headers.
-        $middleware->prepend(\Illuminate\Http\Middleware\HandleCors::class);
+        $middleware->prepend(\App\Http\CorsMiddleware::class);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
