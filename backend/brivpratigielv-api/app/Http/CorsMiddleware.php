@@ -15,11 +15,10 @@ class CorsMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Define allowed origins
-        $allowedOrigins = [
-            'http://localhost:8080',
-            'http://localhost:5173',
-        ];
+        $allowedOrigins = array_values(array_filter(array_map(
+            'trim',
+            explode(',', (string) env('CORS_ALLOWED_ORIGINS', 'https://frontend-tests-production.up.railway.app,https://testsdaratests.vercel.app,http://localhost:8080,http://localhost:5173'))
+        )));
 
         $origin = $request->header('Origin');
 
