@@ -12,17 +12,20 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+
+        // Web middleware
         $middleware->web(append: [
             \App\Http\Middleware\HandleInertiaRequests::class,
             \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
         ]);
 
-        // Trust proxies
-        $middleware->trustProxies(at: ['127.0.0.1', '10.0.0.0/8']);
+        // Trust Railway / proxies
+        $middleware->trustProxies(at: '*');
 
-        // CORS must run early so preflight/short-circuited responses still get headers.
+        // ✅ CORS middleware (GLOBAL - only once)
         $middleware->prepend(\App\Http\CorsMiddleware::class);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
-    })->create();
+    })
+    ->create();

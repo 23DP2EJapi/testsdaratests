@@ -10,4 +10,7 @@ export default defineConfig({
         }),
         react(),
     ],
+    server: {
+        allowedHosts: ['brivpratigie.up.railway.app'],
+    },
 });
