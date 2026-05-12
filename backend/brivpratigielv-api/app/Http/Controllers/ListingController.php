@@ -12,46 +12,65 @@ class ListingController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Listing::query();
+        try {
+            $query = Listing::query();
 
-        if ($request->filled('user_id')) {
-            $query->where('user_id', $request->input('user_id'));
-        } else {
-            $query->where('is_active', true);
+            if ($request->filled('user_id')) {
+                $query->where('user_id', $request->input('user_id'));
+            } else {
+                $query->where('is_active', true);
+            }
+
+            if ($request->has('search')) {
+                $search = $request->input('search');
+                $query->where(function ($q) use ($search) {
+                    $q->where('title', 'like', "%$search%")
+                      ->orWhere('description', 'like', "%$search%");
+                });
+            }
+
+            if ($request->has('category') && $request->input('category') !== 'Visi') {
+                $query->where('category', $request->input('category'));
+            }
+
+            if ($request->has('city') && $request->input('city') !== 'Visas pilsētas') {
+                $query->where('location', $request->input('city'));
+            }
+
+            if ($request->has('is_online') && $request->input('is_online') === 'true') {
+                $query->where('is_online', true);
+            }
+
+            if ($request->has('is_urgent') && $request->input('is_urgent') === 'true') {
+                $query->where('is_urgent', true);
+            }
+
+            if ($request->has('time_commitment') && $request->input('time_commitment') !== 'Visi') {
+                $query->where('time_commitment', $request->input('time_commitment'));
+            }
+
+            $limit = $request->input('limit', 50);
+            $listings = $query->orderBy('created_at', 'desc')->limit($limit)->get();
+
+            return response()->json($listings);
+        } catch (\Throwable $e) {
+            \Log::error('ListingController@index failed', [
+                'message'   => $e->getMessage(),
+                'exception' => get_class($e),
+                'file'      => $e->getFile(),
+                'line'      => $e->getLine(),
+                'trace'     => $e->getTraceAsString(),
+                'request'   => $request->all(),
+            ]);
+
+            return response()->json([
+                'error'     => 'Failed to fetch listings',
+                'message'   => $e->getMessage(),
+                'exception' => get_class($e),
+                'file'      => $e->getFile(),
+                'line'      => $e->getLine(),
+            ], 500);
         }
-
-        if ($request->has('search')) {
-            $search = $request->input('search');
-            $query->where(function ($q) use ($search) {
-                $q->where('title', 'like', "%$search%")
-                  ->orWhere('description', 'like', "%$search%");
-            });
-        }
-
-        if ($request->has('category') && $request->input('category') !== 'Visi') {
-            $query->where('category', $request->input('category'));
-        }
-
-        if ($request->has('city') && $request->input('city') !== 'Visas pilsētas') {
-            $query->where('location', $request->input('city'));
-        }
-
-        if ($request->has('is_online') && $request->input('is_online') === 'true') {
-            $query->where('is_online', true);
-        }
-
-        if ($request->has('is_urgent') && $request->input('is_urgent') === 'true') {
-            $query->where('is_urgent', true);
-        }
-
-        if ($request->has('time_commitment') && $request->input('time_commitment') !== 'Visi') {
-            $query->where('time_commitment', $request->input('time_commitment'));
-        }
-
-        $limit = $request->input('limit', 50);
-        $listings = $query->orderBy('created_at', 'desc')->limit($limit)->get();
-
-        return response()->json($listings);
     }
 
     /**

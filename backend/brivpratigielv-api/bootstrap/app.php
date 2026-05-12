@@ -22,8 +22,6 @@ return Application::configure(basePath: dirname(__DIR__))
         // Trust Railway / proxies
         $middleware->trustProxies(at: '*');
 
-        // ✅ CORS middleware (GLOBAL - only once)
-        $middleware->prepend(\App\Http\CorsMiddleware::class);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
