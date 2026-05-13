@@ -44,6 +44,16 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout']);
     Route::delete('/auth/account', [AuthController::class, 'deleteAccount']);
     Route::get('/auth/user', [AuthController::class, 'me']);
+
+    Route::delete('/admin/users/{userId}', function (string $userId) {
+        $adminEmails = array_filter(array_map('trim', explode(',', (string) env('ADMIN_EMAILS', ''))));
+        if (!in_array(auth('api')->user()->email, $adminEmails, true)) {
+            return response()->json(['message' => 'Forbidden'], 403);
+        }
+        $user = \App\Models\User::findOrFail($userId);
+        $user->delete();
+        return response()->json(['message' => 'User deleted']);
+    });
     Route::get('/user-roles', function (Request $request) {
         $role = $request->query('role');
         $userId = (string) $request->query('user_id');
