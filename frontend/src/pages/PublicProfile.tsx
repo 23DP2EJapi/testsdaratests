@@ -162,9 +162,9 @@ const PublicProfile = () => {
                           {format(new Date(review.created_at), "d. MMMM, yyyy", { locale: lv })}
                         </span>
                       </div>
-                      {review.profiles?.full_name && (
+                      {(review as any).user?.profile?.full_name && (
                         <p className="text-sm font-medium text-foreground mb-1">
-                          {review.profiles.full_name}
+                          {(review as any).user.profile.full_name}
                         </p>
                       )}
                       {review.comment && (

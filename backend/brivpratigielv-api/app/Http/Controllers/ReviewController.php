@@ -26,7 +26,7 @@ class ReviewController extends Controller
             $query->where('review_type', $request->input('review_type'));
         }
 
-        $reviews = $query->with(['user', 'listing', 'reviewedUser'])
+        $reviews = $query->with(['user.profile', 'listing', 'reviewedUser'])
             ->orderBy('created_at', 'desc')
             ->get();
 

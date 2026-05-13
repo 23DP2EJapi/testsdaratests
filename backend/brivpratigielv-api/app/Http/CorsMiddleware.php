@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http;
-
+#comentars
 use Closure;
 use Illuminate\Http\Request;
 

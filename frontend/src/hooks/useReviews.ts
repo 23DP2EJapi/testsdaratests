@@ -85,7 +85,7 @@ export const useSubmitReview = () => {
         rating: params.rating,
         comment: params.comment || null,
         review_type: params.review_type || "listing",
-        reviewed_user_id: params.reviewed_user_id || null,
+        reviewed_user_id: params.reviewed_user_id != null ? String(params.reviewed_user_id) : null,
       });
 
       return data;
