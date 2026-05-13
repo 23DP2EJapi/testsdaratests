@@ -13,6 +13,9 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
 
+        // Register CORS globally so all routes (API, web, OPTIONS preflight) get headers
+        $middleware->prepend(\App\Http\CorsMiddleware::class);
+
         // Web middleware
         $middleware->web(append: [
             \App\Http\Middleware\HandleInertiaRequests::class,

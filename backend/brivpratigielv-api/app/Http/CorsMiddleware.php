@@ -53,7 +53,11 @@ class CorsMiddleware
                 ->header('Access-Control-Allow-Credentials', 'false');
         }
 
-        $response = $next($request);
+        try {
+            $response = $next($request);
+        } catch (\Throwable $e) {
+            $response = response()->json(['message' => $e->getMessage()], 500);
+        }
 
         if ($isAllowed) {
             $response->headers->set('Access-Control-Allow-Origin', $origin);

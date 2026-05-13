@@ -21,8 +21,28 @@ Route::get('/health', function () {
 Route::post('/auth/register', [AuthController::class, 'register']);
 Route::post('/auth/login', [AuthController::class, 'login']);
 
+Route::get('/auth/verify-email/{id}/{hash}', function (Request $request, string $id, string $hash) {
+    if (! $request->hasValidSignature()) {
+        return response()->json(['message' => 'Invalid or expired verification link.'], 403);
+    }
+
+    $user = \App\Models\User::findOrFail($id);
+
+    if (! hash_equals($hash, sha1($user->getEmailForVerification()))) {
+        return response()->json(['message' => 'Invalid verification link.'], 403);
+    }
+
+    if ($user->hasVerifiedEmail()) {
+        return response()->json(['message' => 'Email already verified.']);
+    }
+
+    $user->markEmailAsVerified();
+    return response()->json(['message' => 'Email verified successfully.']);
+})->middleware('signed')->name('api.verification.verify');
+
 Route::middleware('auth:api')->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout']);
+    Route::delete('/auth/account', [AuthController::class, 'deleteAccount']);
     Route::get('/auth/user', [AuthController::class, 'me']);
     Route::get('/user-roles', function (Request $request) {
         $role = $request->query('role');
