@@ -22,7 +22,12 @@ class AuthController extends Controller
             'email'    => $data['email'],
             'password' => bcrypt($data['password']),
         ]);
-        event(new Registered($user));
+
+        try {
+            event(new Registered($user));
+        } catch (\Throwable $e) {
+            \Log::error('Verification email failed: ' . $e->getMessage());
+        }
 
         if (Schema::hasTable('profiles') && Schema::hasColumn('profiles', 'user_id')) {
             $user->profile()->updateOrCreate(
