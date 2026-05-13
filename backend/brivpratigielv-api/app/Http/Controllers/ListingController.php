@@ -145,7 +145,11 @@ class ListingController extends Controller
     {
         $listing = Listing::findOrFail($id);
 
-        if ((string) auth()->id() !== (string) $listing->user_id) {
+        $user = auth()->user();
+        $adminEmails = array_filter(array_map('trim', explode(',', (string) env('ADMIN_EMAILS', ''))));
+        $isAdmin = in_array($user->email, $adminEmails, true);
+
+        if (!$isAdmin && (string) $user->id !== (string) $listing->user_id) {
             return response()->json(['message' => 'Forbidden'], 403);
         }
 
